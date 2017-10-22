@@ -26,6 +26,7 @@
 #ifndef POCO_HAVE_ALIGNMENT
 #include "Poco/RefCountedObject.h"
 #endif
+#include <iostream>
 
 
 namespace Poco {
@@ -99,6 +100,7 @@ inline poco_socklen_t IPv4SocketAddressImpl::length() const
 
 inline const struct sockaddr* IPv4SocketAddressImpl::addr() const
 {
+	std::cout << "IPv4SocketAddressImpl::" << __FUNCTION__ << " Stack address from _addr: " << static_cast<const void*>(&_addr) << std::endl;
 	return reinterpret_cast<const struct sockaddr*>(&_addr);
 }
 

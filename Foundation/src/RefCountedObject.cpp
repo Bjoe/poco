@@ -15,6 +15,7 @@
 
 
 #include "Poco/RefCountedObject.h"
+#include <iostream>
 
 
 namespace Poco {
@@ -22,6 +23,7 @@ namespace Poco {
 
 RefCountedObject::RefCountedObject(): _counter(1)
 {
+	std::cout << "RefCountedObject::" << __FUNCTION__ << " Stack address from _counter: " << static_cast<const void*>(&_counter) << std::endl;
 }
 
 

@@ -60,6 +60,7 @@ IPv4SocketAddressImpl::IPv4SocketAddressImpl(const struct sockaddr_in* addr)
 
 IPv4SocketAddressImpl::IPv4SocketAddressImpl(const void* addr, UInt16 port)
 {
+	std::cout << "IPv4SocketAddressImpl::" << __FUNCTION__ << " Stack address from _addr: " << static_cast<void*>(&_addr) << std::endl;
 	std::memset(&_addr, 0, sizeof(_addr));
 	_addr.sin_family = AF_INET;
 	std::memcpy(&_addr.sin_addr, addr, sizeof(_addr.sin_addr));
