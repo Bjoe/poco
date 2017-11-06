@@ -95,13 +95,13 @@ matrix:
         # install NDK and cmake via android sdkmanager. Unfortunaly to acknowledge the licenses 
         # takes a while. Looks like the "echo y" solution is not working. Needs improvement !
         - export TERM=dumb
-        - echo "y" | /usr/local/android-sdk/tools/bin/sdkmanager "ndk-bundle" "cmake;3.6.4111459"      
-      before_script:
-        - export TERM=dumb
-        - export _NO_CHECK_SIGNATURE=true
-        - echo no | /usr/local/android-sdk/tools/bin/avdmanager create avd -n test -k "system-images;android-23;google_apis;armeabi-v7a"
-        - emulator -avd test -no-audio -no-window &
-        - android-wait-for-emulator
+        - echo "yes" | /usr/local/android-sdk/tools/bin/sdkmanager "ndk-bundle" "cmake;3.6.4111459"      
+      #before_script:
+        #- export TERM=dumb
+        #- export _NO_CHECK_SIGNATURE=true
+        #- echo no | /usr/local/android-sdk/tools/bin/avdmanager create avd -n test -k "system-images;android-23;google_apis;armeabi-v7a"
+        #- emulator -avd test -no-audio -no-window &
+        #- android-wait-for-emulator
       script:
         # Mandatory cmake parameter for the android toolchain:
         # /usr/local/android-sdk/cmake/3.6.4111459/bin/cmake -DANDROID_ABI=armeabi-v7a -DCMAKE_TOOLCHAIN_FILE=/usr/local/android-sdk/ndk-bundle/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=android-22
