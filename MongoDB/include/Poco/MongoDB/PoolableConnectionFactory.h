@@ -1,8 +1,6 @@
 //
 // PoolableConnectionFactory.h
 //
-// $Id$
-//
 // Library: MongoDB
 // Package: MongoDB
 // Module:  PoolableConnectionFactory
@@ -33,13 +31,13 @@ class PoolableObjectFactory<MongoDB::Connection, MongoDB::Connection::Ptr>
 	/// are created with the given address.
 {
 public:
-	PoolableObjectFactory(Net::SocketAddress& address)
-		: _address(address)
+	PoolableObjectFactory(Net::SocketAddress& address):
+		_address(address)
 	{
 	}
 
-	PoolableObjectFactory(const std::string& address)
-		: _address(address)
+	PoolableObjectFactory(const std::string& address):
+		_address(address)
 	{
 	}
 
@@ -105,8 +103,7 @@ private:
 };
 
 
-} // namespace MongoDB
-} // namespace Poco
+} } // namespace Poco::MongoDB
 
 
-#endif //MongoDB_PoolableConnectionFactory_INCLUDED
+#endif // MongoDB_PoolableConnectionFactory_INCLUDED

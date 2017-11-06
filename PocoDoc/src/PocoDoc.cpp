@@ -1,8 +1,6 @@
 //
 // PocoDoc.cpp
 //
-// $Id: //poco/1.7/PocoDoc/src/PocoDoc.cpp#2 $
-//
 // Copyright (c) 2005-2014, Applied Informatics Software Engineering GmbH.
 // and Contributors.
 //
@@ -259,12 +257,15 @@ protected:
 			return new Preprocessor(proc, new std::ifstream(pp.getFileName().c_str()), pp.getFileName());
 		}
 	}
-	
+
 	void parse(const std::string& file)
 	{
 		logger().information("Preprocessing " + file);
+#ifndef POCO_ENABLE_CPP11
 		std::auto_ptr<Preprocessor> pPreProc(preprocess(file));
-		
+#else
+		std::unique_ptr<Preprocessor> pPreProc(preprocess(file));
+#endif // POCO_ENABLE_CPP11
 		logger().information("Parsing " + file);
 		if (pPreProc->stream().good())
 		{
@@ -273,7 +274,7 @@ protected:
 		}
 		else throw Poco::OpenFileException("cannot read from preprocessor");
 	}
-		
+
 	int parseAll()
 	{
 		int errors = 0;

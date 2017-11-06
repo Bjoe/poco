@@ -6,14 +6,16 @@
 # ENABLE_{COMPONENT}
 # ENABLE_TESTS
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.2.0)
 
 project(Poco)
+
+set(CMAKE_C_STANDARD 11)
 
 file(STRINGS "${PROJECT_SOURCE_DIR}/libversion" SHARED_LIBRARY_VERSION)
 
 # Read the version information from the VERSION file
-file (STRINGS "${PROJECT_SOURCE_DIR}/VERSION" PACKAGE_VERSION )
+file(STRINGS "${PROJECT_SOURCE_DIR}/VERSION" PACKAGE_VERSION)
 message(STATUS "Poco package version: ${PACKAGE_VERSION}")
 string(REGEX REPLACE "([0-9]+)\\.[0-9]+\\.[0-9]+.*" "\\1" CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION})
 string(REGEX REPLACE "[0-9]+\\.([0-9])+\\.[0-9]+.*" "\\1" CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION})
@@ -22,6 +24,7 @@ string(REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" CPACK_PACKAGE_VERSION_
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Unstable-trunk")
 set(PROJECT_VERSION ${COMPLETE_VERSION})
+set(CMAKE_C_STANDARD 99)
 
 # Put the libaries and binaries that get built into directories at the
 # top of the build tree rather than in hard-to-find leaf
@@ -41,6 +44,37 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # Setup C/C++ compiler options
 #################################################################################
 
+option(DISABLE_CPP11 "Disable C++11 if available" OFF)
+option(DISABLE_CPP14 "Disable C++14 if available" OFF)
+
+if (DISABLE_CPP11 OR DISABLE_CPP14)
+    add_definitions(-DPOCO_DISABLE_CPP11)
+
+    if (DISABLE_CPP14)
+        add_definitions(-DPOCO_DISABLE_CPP14)
+    endif()
+else()
+    # C++11/14 compiler flags
+    include(CXX1x)
+    check_for_cxx11_compiler(CXX11_COMPILER)
+
+    # If a C++11 compiler is available, then set the appropriate flags
+    if(CXX11_COMPILER)
+        enable_cxx11()
+        check_for_cxx14_compiler(CXX14_COMPILER)
+
+        # If a C++14 compiler is available, then set the appropriate flags
+        if(CXX14_COMPILER)
+            enable_cxx14()
+        endif()
+    endif()
+endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+endif()
+
+
 if(NOT MSVC_IDE)
   if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
@@ -49,8 +83,8 @@ if(NOT MSVC_IDE)
   message(STATUS "Setting Poco build type - ${CMAKE_BUILD_TYPE}")
 endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL "")
-    set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
+if(CMAKE_BUILD_TYPE STREQUAL "")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
 # Include some common macros to simpilfy the Poco CMake files
@@ -99,38 +133,38 @@ endif()
 
 # Uncomment from next two lines to force static or dynamic library, default is autodetection
 if(POCO_STATIC)
-    set( LIB_MODE_DEFINITIONS -DPOCO_STATIC -DPOCO_NO_AUTOMATIC_LIBS)
-    set( LIB_MODE STATIC )
+    set(LIB_MODE_DEFINITIONS -DPOCO_STATIC -DPOCO_NO_AUTOMATIC_LIBS)
+    set(LIB_MODE STATIC)
     message(STATUS "Building static libraries")
 else(POCO_STATIC)
-    set( LIB_MODE SHARED )
-    set( LIB_MODE_DEFINITIONS -DPOCO_NO_AUTOMATIC_LIBS)
+    set(LIB_MODE SHARED)
+    set(LIB_MODE_DEFINITIONS -DPOCO_NO_AUTOMATIC_LIBS)
     message(STATUS "Building dynamic libraries")
 endif(POCO_STATIC)
 
-if (ENABLE_TESTS)
+if(ENABLE_TESTS)
   include(CTest)
   enable_testing()
   message(STATUS "Building with unittests & samples")
-else ()
+else()
   message(STATUS "Building without tests & samples")
-endif ()
+endif()
 
-if (POCO_UNBUNDLED)
-  add_definitions( -DPOCO_UNBUNDLED)
+if(POCO_UNBUNDLED)
+  add_definitions(-DPOCO_UNBUNDLED)
   message(STATUS "Build with using external sqlite, libz, pcre, expat ...")
-else ()
+else()
   message(STATUS "Build with using internal copy of sqlite, libz, pcre, expat, ...")
-endif ()
+endif()
 
 include(DefinePlatformSpecifc)
 
 # Collect the built libraries and include dirs, the will be used to create the PocoConfig.cmake file
 set(Poco_COMPONENTS "")
 
-if (ENABLE_TESTS)
+if(ENABLE_TESTS)
    add_subdirectory(CppUnit)
-endif ()
+endif()
 
 add_subdirectory(Foundation)
 if(ENABLE_XML)
