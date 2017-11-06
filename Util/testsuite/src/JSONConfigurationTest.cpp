@@ -80,7 +80,6 @@ void JSONConfigurationTest::testLoad()
 	catch(NotFoundException nfe)
 	{
 	}
-
 }
 
 

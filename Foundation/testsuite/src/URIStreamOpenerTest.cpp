@@ -72,7 +72,7 @@ void URIStreamOpenerTest::testStreamOpenerFile()
 	std::istream* istr = opener.open(uri);
 	assert (istr != 0);
 	assert (istr->good());
-	delete istr;
+	delete istr;	
 }
 
 

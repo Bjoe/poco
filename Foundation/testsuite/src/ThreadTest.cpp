@@ -403,7 +403,6 @@ void ThreadTest::testThreadFunctor()
 void ThreadTest::testThreadStackSize()
 {
 	int stackSize = 50000000;
-
 	Thread thread;
 
 	assert (0 == thread.getStackSize());
@@ -418,7 +417,7 @@ void ThreadTest::testThreadStackSize()
 	thread.setStackSize(stackSize);
 
 #if !defined(POCO_OS_FAMILY_BSD) // on BSD family, stack size is rounded
-	#ifdef PTHREAD_STACK_MIN
+	#if defined(PTHREAD_STACK_MIN)
 		assert (PTHREAD_STACK_MIN == thread.getStackSize());
 	#else
 		assert (stackSize >= thread.getStackSize());

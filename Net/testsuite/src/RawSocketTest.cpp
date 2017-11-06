@@ -43,6 +43,7 @@ RawSocketTest::~RawSocketTest()
 
 void RawSocketTest::testEchoIPv4()
 {
+
 	SocketAddress sa("127.0.0.1", 0);
 	RawSocket rs(IPAddress::IPv4);
 	rs.connect(sa);
@@ -60,14 +61,14 @@ void RawSocketTest::testEchoIPv4()
 	assert (5 == (n - shift));
 	assert ("hello" == std::string((char*)ptr, 5));
 
-	rs.close(); 
+	rs.close();
 }
 
 
 void RawSocketTest::testSendToReceiveFromIPv4()
 {
 	RawSocket rs(IPAddress::IPv4);
-	
+
 	int n = rs.sendTo("hello", 5, SocketAddress("127.0.0.1", 0));
 	assert (n == 5);
 

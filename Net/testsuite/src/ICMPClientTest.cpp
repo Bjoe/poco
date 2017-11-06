@@ -49,12 +49,17 @@ void ICMPClientTest::testPing()
 	assert(ICMPClient::pingIPv4("127.0.0.1") > 0);
 
 	assert(_icmpClient.ping("127.0.0.1") > 0);
+#ifdef __ANDROID__
+	assert(_icmpClient.ping("10.0.2.15", 4) > 0);
+	assert(_icmpClient.ping("10.0.2.2", 4) > 0);
+#else
 	assert(_icmpClient.ping("www.appinf.com", 4) > 0);
 
 	// warning: may fail depending on the existence of the addresses at test site
 	// if so, adjust accordingly (i.e. specify non-existent or unreachable IP addresses)
 	assert(0 == _icmpClient.ping("192.168.243.1"));
 	assert(0 == _icmpClient.ping("10.11.12.13"));
+#endif
 }
 
 
