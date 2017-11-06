@@ -29,9 +29,9 @@ add_test(NAME ${LIBNAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COM
 set_tests_properties(${LIBNAME} PROPERTIES ENVIRONMENT "LD_LIBRARY_PATH=.") # The SharedLibaryTest has to look for shared libraries in the working directory
 
 target_link_libraries( ${TESTUNIT} PocoFoundation CppUnit )
-if(UNIX)
+if(UNIX AND NOT ANDROID)
     target_link_libraries( ${TESTUNIT} pthread)
-endif(UNIX)
+endif(UNIX AND NOT ANDROID)
 
 # The test is run in the runtime directory. So the test data is copied there too
 add_custom_command(TARGET ${TESTUNIT} POST_BUILD
