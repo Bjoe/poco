@@ -95,11 +95,12 @@ matrix:
         # install NDK and cmake via android sdkmanager. Unfortunaly to acknowledge the licenses 
         # takes a while. Looks like the "echo y" solution is not working. Needs improvement !
         - export TERM=dumb
+        - touch ~/.android/repositories.cfg
         - mkdir -p /usr/local/android-sdk/licenses
         - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/android-sdk/licenses/android-sdk-license
         - echo -e "\nd56f5187479451eabf01fb78af6dfcb131a6481e" >> /usr/local/android-sdk/licenses/android-sdk-license
-        - /usr/local/android-sdk/tools/bin/sdkmanager --update
-        - /usr/local/android-sdk/tools/bin/sdkmanager "ndk-bundle" "cmake;3.6.4111459"      
+        - /usr/local/android-sdk/tools/bin/sdkmanager --update > /dev/null
+        - /usr/local/android-sdk/tools/bin/sdkmanager "ndk-bundle" "cmake;3.6.4111459" > /dev/null     
       before_script:
         - export TERM=dumb
         - export _NO_CHECK_SIGNATURE=true
