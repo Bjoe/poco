@@ -94,7 +94,7 @@ matrix:
       before_install:
         - export TERM=dumb
         - sudo apt-get update -qq
-        - sudo apt-get install -qq -y qemu-system-arm
+        - sudo apt-get install -qq -y qemu-system-arm qemu-user-static
         # install NDK and cmake via android sdkmanager. Unfortunaly to acknowledge the licenses 
         # takes a while. Looks like the "echo y" solution is not working. Needs improvement !
         - touch ~/.android/repositories.cfg
