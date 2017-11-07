@@ -95,6 +95,7 @@ matrix:
         # install NDK and cmake via android sdkmanager. Unfortunaly to acknowledge the licenses 
         # takes a while. Looks like the "echo y" solution is not working. Needs improvement !
         - export TERM=dumb
+        - /usr/local/android-sdk/tools/bin/sdkmanager --update
         - echo "yes" | /usr/local/android-sdk/tools/bin/sdkmanager "ndk-bundle" "cmake;3.6.4111459"      
       before_script:
         - export TERM=dumb
