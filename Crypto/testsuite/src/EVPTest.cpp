@@ -59,6 +59,7 @@ void EVPTest::testRSAEVPPKey()
 		assert(key->type() == Poco::Crypto::KeyPair::KT_RSA);
 		// construct EVPPKey from RSAKey*
 		pKey = new EVPPKey(key);
+		delete key;
 		assert (pKey->type() == EVP_PKEY_RSA);
 
 		BIO* bioPriv1 = BIO_new(BIO_s_mem());
