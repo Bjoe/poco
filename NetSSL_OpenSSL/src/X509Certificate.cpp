@@ -61,10 +61,9 @@ X509Certificate::X509Certificate(const Poco::Crypto::X509Certificate& cert):
 }
 
 
-X509Certificate& X509Certificate::operator = (const Poco::Crypto::X509Certificate& cert)
+X509Certificate& X509Certificate::operator = (Poco::Crypto::X509Certificate other)
 {
-	X509Certificate tmp(cert);
-	swap(tmp);
+	Poco::Crypto::X509Certificate::swap(*this, other);
 	return *this;
 }
 
