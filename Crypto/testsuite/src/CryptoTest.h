@@ -39,7 +39,11 @@ public:
 	void testEncryptInterop();
 	void testDecryptInterop();
 	void testCertificate();
-	
+	void testSignCertificate();
+	void testSignRequestCertificate();
+	void testVerifyCertificate();
+	void testRevokeCertificate();
+
 	void setUp();
 	void tearDown();
 
