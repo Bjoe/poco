@@ -446,9 +446,11 @@ void CryptoTest::testSignRequestCertificate()
 
 void CryptoTest::testVerifyCertificate()
 {
+std::cout << std::endl;
+std::cout << "Create rootCaCert ..." << std::endl;
+
 	Poco::DateTime validFrom(2017, 8, 7);
 	Poco::DateTime expireDate(2323, 12, 31);
-
 	X509Certificate rootCaCert;
 	rootCaCert.setCommonName("Root CA");
 	rootCaCert.setValidFrom(validFrom);
@@ -459,6 +461,8 @@ void CryptoTest::testVerifyCertificate()
 	rootCaCert.setPublicKey(caKey);
 	rootCaCert.addIssuer(X509Certificate::NID_COMMON_NAME, rootCaCert.commonName());
 	rootCaCert.sign(caKey);
+
+std::cout << "Create intermediateCaCert ..." << std::endl;
 
 	X509Certificate intermediateCaCert;
 	intermediateCaCert.setCommonName("Intermediate CA");
@@ -471,6 +475,8 @@ void CryptoTest::testVerifyCertificate()
 	intermediateCaCert.setPublicKey(intermediateCaKey);
 	intermediateCaCert.sign(caKey);
 
+std::cout << "Create cert ..." << std::endl;
+
 	X509Certificate cert;
 	cert.setCommonName("Server Cert");
 	cert.setValidFrom(validFrom);
@@ -481,12 +487,18 @@ void CryptoTest::testVerifyCertificate()
 	cert.setPublicKey(certKey);
 	cert.sign(intermediateCaKey);
 
+std::cout << "Create wrongCert ..." << std::endl;
+
 	std::istringstream wrongCertStream(APPINF_PEM);
 	X509Certificate wrongCert(wrongCertStream);
+
+std::cout << "Create X509Store ..." << std::endl;
 
 	X509Store store;
 	store.addCa(rootCaCert);
 	store.addCa(intermediateCaCert);
+
+std::cout << "VerifyResult ..." << std::endl;
 
 	X509Store::VerifyResult result = store.verifyCertificateChain(cert);
 	assert (result.isOk() == true);
