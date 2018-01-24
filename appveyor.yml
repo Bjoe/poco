@@ -1,11 +1,11 @@
 version: build {branch}-{build}
 
 cache:
-  - C:\mysql-5.7.21-win32
+  #- C:\mysql-5.7.21-win32
   - C:\ProgramData\chocolatey
   - C:\OpenSSL-Win32
   - C:\OpenSSL-Win64
-  - C:\Program Files (x86)\PostgreSQL\9.6
+  #- C:\Program Files (x86)\PostgreSQL\9.6
 
 
 branches:
@@ -24,16 +24,16 @@ hosts:
 services:
 # mysql : server: localhost, port: 3306
 # mysql : user  : root, password: Password12!
-  - mysql
+  #- mysql
 
 # mongodb config  : C:\mongodb\mongod.cfg
 # mongodb database: C:\mongodb\data\db
-  - mongodb
+  #- mongodb
 
 # Server name: localhost
 # Server port: 5432
 # postgres account password: Password12!
-  - postgresql
+  #- postgresql
 
 
 image:
@@ -55,12 +55,12 @@ configuration:
 
 environment:
   bundling:     bundled
-  MYSQL32URL:   http://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.21-win32.zip
-  MYSQL32ZIP:   mysql-5.7.21-win32.zip
-  MYSQL32:      C:\mysql-5.7.21-win32
-  MYSQL64:      C:\Program Files\MySql\MySQL Server 5.7
-  POSTGRES32:   C:\Program Files (x86)\PostgreSQL\9.6
-  POSTGRES64:   C:\Program Files\PostgreSQL\9.6
+  #MYSQL32URL:   http://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.21-win32.zip
+  #MYSQL32ZIP:   mysql-5.7.21-win32.zip
+  #MYSQL32:      C:\mysql-5.7.21-win32
+  #MYSQL64:      C:\Program Files\MySql\MySQL Server 5.7
+  #POSTGRES32:   C:\Program Files (x86)\PostgreSQL\9.6
+  #POSTGRES64:   C:\Program Files\PostgreSQL\9.6
   OPENSSLURL:   https://slproweb.com/download
   OPENSSL32EXE: Win32OpenSSL-1_1_0f.exe
   OPENSSL64EXE: Win64OpenSSL-1_1_0f.exe
@@ -209,47 +209,47 @@ install:
 # -------------------------------------------------------------------------------------------
 #  MySQL 32 bit is not available by default on AppVeyor
 # -------------------------------------------------------------------------------------------
-  - ps: |
-      if ($env:platform -eq "Win32")
-      {
-        if (Test-Path $env:MYSQL32) {
-          Write-Host "using $env:MYSQL32 from cache" -ForegroundColor Yellow
-        }
-        else
-        {
-          Write-Host "downloading $env:MYSQL32" -ForegroundColor Cyan
-          Invoke-WebRequest $env:MYSQL32URL -OutFile $env:MYSQL32ZIP
-          Write-Host "installing $env:MYSQL32" -ForegroundColor Green
-          7z x -y $env:MYSQL32ZIP -oc:\
-        }
-      }
+  #- ps: |
+      #if ($env:platform -eq "Win32")
+      #{
+        #if (Test-Path $env:MYSQL32) {
+          #Write-Host "using $env:MYSQL32 from cache" -ForegroundColor Yellow
+        #}
+        #else
+        #{
+          #Write-Host "downloading $env:MYSQL32" -ForegroundColor Cyan
+          #Invoke-WebRequest $env:MYSQL32URL -OutFile $env:MYSQL32ZIP
+          #Write-Host "installing $env:MYSQL32" -ForegroundColor Green
+          #7z x -y $env:MYSQL32ZIP -oc:\
+        #}
+      #}
 # -------------------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------------------
 #  PostgreSQL 32 bit is not available by default on AppVeyor
 #  http://www.enterprisedb.com/products-services-training/pgdownload#windows
 # -------------------------------------------------------------------------------------------
-  - ps: |
-      if ($env:platform -eq "Win32")
-      {
-        if (Test-Path $env:POSTGRES32) {
-          Write-Host "using $env:POSTGRES32 from cache" -ForegroundColor Yellow
-        }
-        else
-        {
-          Write-Host "Installing $env:POSTGRES32 ..." -ForegroundColor Cyan
-          Write-Host "Downloading..."
-          $exePath = "$($env:USERPROFILE)\postgresql-9.6.5-1-windows.exe"
-          (New-Object Net.WebClient).DownloadFile('http://get.enterprisedb.com/postgresql/postgresql-9.6.5-1-windows.exe', $exePath)
-          Write-Host "Installing..."
-          cmd /c start /wait $exePath --mode unattended --superpassword Password12!
-          del $exePath
-          Write-Host "Setting up services..."
-          Stop-Service postgresql-9.6
-          Set-Service -Name postgresql-9.6 -StartupType Manual
-          Write-Host "$env:POSTGRES32 installed" -ForegroundColor Green
-        }
-      }
+  #- ps: |
+      #if ($env:platform -eq "Win32")
+      #{
+        #if (Test-Path $env:POSTGRES32) {
+          #Write-Host "using $env:POSTGRES32 from cache" -ForegroundColor Yellow
+        #}
+        #else
+        #{
+          #Write-Host "Installing $env:POSTGRES32 ..." -ForegroundColor Cyan
+          #Write-Host "Downloading..."
+          #$exePath = "$($env:USERPROFILE)\postgresql-9.6.5-1-windows.exe"
+          #(New-Object Net.WebClient).DownloadFile('http://get.enterprisedb.com/postgresql/postgresql-9.6.5-1-windows.exe', $exePath)
+          #Write-Host "Installing..."
+          #cmd /c start /wait $exePath --mode unattended --superpassword Password12!
+          #del $exePath
+          #Write-Host "Setting up services..."
+          #Stop-Service postgresql-9.6
+          #Set-Service -Name postgresql-9.6 -StartupType Manual
+          #Write-Host "$env:POSTGRES32 installed" -ForegroundColor Green
+        #}
+      #}
 # -------------------------------------------------------------------------------------------
 
 
@@ -299,50 +299,50 @@ before_build:
 #        & C:\cygwin\bin\ls -lR $env:MYSQL32
 #        & C:\cygwin\bin\ls -lR $env:MYSQL64
 # -------------------------------------------------------------------------------------------
-  - ps: |
-        if ($env:platform -eq "Win32")
-        {
-          $env:INCLUDE = $env:MYSQL32 + "\include;" + $env:INCLUDE
-          $env:LIB     = $env:MYSQL32 + "\lib;" + $env:LIB
-          $env:PATH    = $env:MYSQL32 + "\bin;" + $env:PATH
-          if (Test-Path ($env:MYSQL32 + "\lib\libmysql.dll")) {
-            $from = $env:MYSQL32 + "\lib\libmysql.dll";
-            $to   = $env:MYSQL32 + "\bin\libmysql.dll"
-            copy $from $to
-          }
-        }
-        if ($env:platform -eq "x64")
-        {
-          $env:INCLUDE = $env:MYSQL64 + "\include;" + $env:INCLUDE
-          $env:LIB     = $env:MYSQL64 + "\lib;" + $env:LIB
-          $env:PATH    = $env:MYSQL64 + "\bin;" + $env:PATH
-          if (Test-Path ($env:MYSQL64 + "\lib\libmysql.dll")) {
-            $from = $env:MYSQL64 + "\lib\libmysql.dll";
-            $to   = $env:MYSQL64 + "\bin\libmysql.dll"
-            copy $from $to
-          }
-        }
-        $env:MYSQL_PWD="Password12!"
-        $cmd = 'mysql -e "create database pocotestdb;" --user=root';
-        iex "& $cmd"
+  #- ps: |
+        #if ($env:platform -eq "Win32")
+        #{
+          #$env:INCLUDE = $env:MYSQL32 + "\include;" + $env:INCLUDE
+          #$env:LIB     = $env:MYSQL32 + "\lib;" + $env:LIB
+          #$env:PATH    = $env:MYSQL32 + "\bin;" + $env:PATH
+          #if (Test-Path ($env:MYSQL32 + "\lib\libmysql.dll")) {
+            #$from = $env:MYSQL32 + "\lib\libmysql.dll";
+            #$to   = $env:MYSQL32 + "\bin\libmysql.dll"
+            #copy $from $to
+          #}
+        #}
+        #if ($env:platform -eq "x64")
+        #{
+          #$env:INCLUDE = $env:MYSQL64 + "\include;" + $env:INCLUDE
+          #$env:LIB     = $env:MYSQL64 + "\lib;" + $env:LIB
+          #$env:PATH    = $env:MYSQL64 + "\bin;" + $env:PATH
+          #if (Test-Path ($env:MYSQL64 + "\lib\libmysql.dll")) {
+            #$from = $env:MYSQL64 + "\lib\libmysql.dll";
+            #$to   = $env:MYSQL64 + "\bin\libmysql.dll"
+            #copy $from $to
+          #}
+        #}
+        #$env:MYSQL_PWD="Password12!"
+        #$cmd = 'mysql -e "create database pocotestdb;" --user=root';
+        #iex "& $cmd"
 # -------------------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------------------
 # PostgreSQL
 # -------------------------------------------------------------------------------------------
-  - ps: |
-        if ($env:platform -eq "Win32")
-        {
-            $env:INCLUDE = $env:POSTGRES32 + "\include;" + $env:INCLUDE
-            $env:LIB     = $env:POSTGRES32 + "\lib;" + $env:LIB
-            $env:PATH    = $env:POSTGRES32 + "\bin;" + $env:PATH
-        }
-        if ($env:platform -eq "x64")
-        {
-            $env:INCLUDE = $env:POSTGRES64 + "\include;" + $env:INCLUDE
-            $env:LIB     = $env:POSTGRES64 + "\lib;" + $env:LIB
-            $env:PATH    = $env:POSTGRES64 + "\bin;" + $env:PATH
-        }
+  #- ps: |
+        #if ($env:platform -eq "Win32")
+        #{
+            #$env:INCLUDE = $env:POSTGRES32 + "\include;" + $env:INCLUDE
+            #$env:LIB     = $env:POSTGRES32 + "\lib;" + $env:LIB
+            #$env:PATH    = $env:POSTGRES32 + "\bin;" + $env:PATH
+        #}
+        #if ($env:platform -eq "x64")
+        #{
+            #$env:INCLUDE = $env:POSTGRES64 + "\include;" + $env:INCLUDE
+            #$env:LIB     = $env:POSTGRES64 + "\lib;" + $env:LIB
+            #$env:PATH    = $env:POSTGRES64 + "\bin;" + $env:PATH
+        #}
 # -------------------------------------------------------------------------------------------
 
 after_build:
