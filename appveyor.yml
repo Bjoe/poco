@@ -582,7 +582,7 @@ test_script:
           Write-Host -ForegroundColor Yellow $line;
 
           Write-Host -ForegroundColor Yellow 'ctest -C Debug -VV -E SQL*'
-          ctest -C Debug -VV -E SQL*
+          ctest -C Debug -VV -I 9,9 -E SQL* 
           popd
         }
         Write-Host $runs' runs, ' $fails' fails'
