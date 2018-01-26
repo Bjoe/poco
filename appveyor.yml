@@ -472,129 +472,129 @@ build_script:
 
 
 before_test:
-- ps: |
-      $line='-------------------------------------------------------------------------------------';
-      $CPPUNIT_IGNORE='';
-      $CPPUNIT_IGNORE+='class CppUnit::TestCaller<class NTPClientTest>.testTimeSync';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class RawSocketTest>.testEchoIPv4';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class RawSocketTest>.testSendToReceiveFromIPv4';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class ICMPClientTest>.testPing';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class ICMPClientTest>.testBigPing';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class HTTPSClientSessionTest>.testProxy';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class HTTPSStreamFactoryTest>.testProxy';
-      $CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class TCPServerTest>.testReuseSocket';
-      set-item -force -path "ENV:CPPUNIT_IGNORE"  -value $CPPUNIT_IGNORE
-      Write-Host -ForegroundColor Yellow 'CPPUNIT_IGNORE'
-      Write-Host -ForegroundColor Yellow $line;
-      foreach($t in $CPPUNIT_IGNORE.split(",")) { Write-Host -ForegroundColor Yellow $t.trim() }
-      Write-Host -ForegroundColor Yellow $line;
+#- ps: |
+      #$line='-------------------------------------------------------------------------------------';
+      #$CPPUNIT_IGNORE='';
+      #$CPPUNIT_IGNORE+='class CppUnit::TestCaller<class NTPClientTest>.testTimeSync';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class RawSocketTest>.testEchoIPv4';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class RawSocketTest>.testSendToReceiveFromIPv4';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class ICMPClientTest>.testPing';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class ICMPClientTest>.testBigPing';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class HTTPSClientSessionTest>.testProxy';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class HTTPSStreamFactoryTest>.testProxy';
+      #$CPPUNIT_IGNORE+=', class CppUnit::TestCaller<class TCPServerTest>.testReuseSocket';
+      #set-item -force -path "ENV:CPPUNIT_IGNORE"  -value $CPPUNIT_IGNORE
+      #Write-Host -ForegroundColor Yellow 'CPPUNIT_IGNORE'
+      #Write-Host -ForegroundColor Yellow $line;
+      #foreach($t in $CPPUNIT_IGNORE.split(",")) { Write-Host -ForegroundColor Yellow $t.trim() }
+      #Write-Host -ForegroundColor Yellow $line;
 
 
 after_test:
 
 
 test_script:
-  - ps: |
-      $runs=0;$fails=0;$failedTests='';$status=0;$tab="`t";
-      $line='-------------------------------------------------------------------------------------';
-      if ($env:configuration -eq "release")
-      {
-        if ($env:builder -eq "cygwin")
-        {
-          $LastExitCode=0;
-          if ($env:platform -eq "Win32")
-          {
-            $cmd = 'C:\cygwin\usr\sbin\cygserver.exe "&"';iex "& $cmd"
-          }
-          if ($env:platform -eq "x64")
-          {
-            $cmd = 'C:\cygwin64\usr\sbin\cygserver.exe "&"';iex "& $cmd"
-          }
-          $cmd = 'bash.exe -c "appveyor/Cygwin/runtests.sh"';iex "& $cmd";
-          Write-Host -ForegroundColor Yellow $cmd ': LastExitCode=' $lastExitCode;
-        }
-        if ($env:builder -eq "msbuild" -and $env:linkmode -eq "shared")
-        {
-          $suffix = '';
-          if ($env:platform -eq "Win32")
-          {
-            $env:PATH = "$env:POCO_BASE\bin;" + $env:PATH;$suffix = '';
-            $excluded   = @('SQL', 'SQL/ODBC', 'Redis', 'PDF')
-          }
-          if ($env:platform -eq "x64")
-          {
-            $env:PATH = "$env:POCO_BASE\bin64;" + $env:PATH;$suffix = 64;
-            $excluded   = @('SQL', 'SQL/ODBC', 'Redis', 'PDF')
-          }
+  #- ps: |
+      #$runs=0;$fails=0;$failedTests='';$status=0;$tab="`t";
+      #$line='-------------------------------------------------------------------------------------';
+      #if ($env:configuration -eq "release")
+      #{
+        #if ($env:builder -eq "cygwin")
+        #{
+          #$LastExitCode=0;
+          #if ($env:platform -eq "Win32")
+          #{
+            #$cmd = 'C:\cygwin\usr\sbin\cygserver.exe "&"';iex "& $cmd"
+          #}
+          #if ($env:platform -eq "x64")
+          #{
+            #$cmd = 'C:\cygwin64\usr\sbin\cygserver.exe "&"';iex "& $cmd"
+          #}
+          #$cmd = 'bash.exe -c "appveyor/Cygwin/runtests.sh"';iex "& $cmd";
+          #Write-Host -ForegroundColor Yellow $cmd ': LastExitCode=' $lastExitCode;
+        #}
+        #if ($env:builder -eq "msbuild" -and $env:linkmode -eq "shared")
+        #{
+          #$suffix = '';
+          #if ($env:platform -eq "Win32")
+          #{
+            #$env:PATH = "$env:POCO_BASE\bin;" + $env:PATH;$suffix = '';
+            #$excluded   = @('SQL', 'SQL/ODBC', 'Redis', 'PDF')
+          #}
+          #if ($env:platform -eq "x64")
+          #{
+            #$env:PATH = "$env:POCO_BASE\bin64;" + $env:PATH;$suffix = 64;
+            #$excluded   = @('SQL', 'SQL/ODBC', 'Redis', 'PDF')
+          #}
 
-          Write-Host -ForegroundColor Yellow '>>> current directory is '  $(get-location).Path;
+          #Write-Host -ForegroundColor Yellow '>>> current directory is '  $(get-location).Path;
 
-          $components = gc $env:poco_base\components;
-          Write-Host components;
-          Write-Host -ForegroundColor Yellow $line;
-          $components;
-          Write-Host -ForegroundColor Yellow $line;
+          #$components = gc $env:poco_base\components;
+          #Write-Host components;
+          #Write-Host -ForegroundColor Yellow $line;
+          #$components;
+          #Write-Host -ForegroundColor Yellow $line;
 
 
-          Write-Host excluded;
-          Write-Host -ForegroundColor Yellow $line;
-          $excluded
-          Write-Host -ForegroundColor Yellow $line;
+          #Write-Host excluded;
+          #Write-Host -ForegroundColor Yellow $line;
+          #$excluded
+          #Write-Host -ForegroundColor Yellow $line;
 
-          foreach ($component in $components) {
-            if ($excluded -notcontains $component) {
-              $path = "$env:poco_base\" + $component + "\testsuite\bin$suffix\TestSuite.exe";
+          #foreach ($component in $components) {
+            #if ($excluded -notcontains $component) {
+              #$path = "$env:poco_base\" + $component + "\testsuite\bin$suffix\TestSuite.exe";
 
-              if (Test-Path -Path $path) {
-                $runs += 1;
-                Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Running'
+              #if (Test-Path -Path $path) {
+                #$runs += 1;
+                #Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Running'
 
-                Write-Host -ForegroundColor Yellow $line;
-                Write-Host -ForegroundColor Yellow '|' $env:APPVEYOR_BUILD_VERSION $env:vs$vsver $env:Platform $env:Configuration $env:linkmode '|' $tab $tab $component;
-                Write-Host -ForegroundColor Yellow $line;
+                #Write-Host -ForegroundColor Yellow $line;
+                #Write-Host -ForegroundColor Yellow '|' $env:APPVEYOR_BUILD_VERSION $env:vs$vsver $env:Platform $env:Configuration $env:linkmode '|' $tab $tab $component;
+                #Write-Host -ForegroundColor Yellow $line;
 
-                $started = Get-Date
-                $process = Start-Process -PassThru -nnw -Wait -FilePath "$path" -Args "-all" -RSO cout -RSE cerr;
-                $ended   = Get-Date
-                $millisec = ($ended - $started).totalmilliseconds
+                #$started = Get-Date
+                #$process = Start-Process -PassThru -nnw -Wait -FilePath "$path" -Args "-all" -RSO cout -RSE cerr;
+                #$ended   = Get-Date
+                #$millisec = ($ended - $started).totalmilliseconds
 
-                gc cout; gc cerr;
+                #gc cout; gc cerr;
 
-                if ($process.ExitCode -gt 0) {
-                  $fails += 1;$failedTests += $component + ', ';
-                  Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Failed' -Duration $millisec
-                } else {
-                  Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Passed' -Duration $millisec
-                }
-              } else {
-                 Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome   'NotFound'
-              }
-            } else {
-              Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Skipped'
-            }
-          }
-        }
-        if ($env:builder -eq "cmake")
-        {
-          pushd cmake-build;
-          Write-Host -ForegroundColor Yellow $line;
-          ctest --config RelWithDebInfo -N
-          Write-Host -ForegroundColor Yellow $line;
+                #if ($process.ExitCode -gt 0) {
+                  #$fails += 1;$failedTests += $component + ', ';
+                  #Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Failed' -Duration $millisec
+                #} else {
+                  #Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Passed' -Duration $millisec
+                #}
+              #} else {
+                 #Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome   'NotFound'
+              #}
+            #} else {
+              #Add-AppveyorTest -Framework 'CppUnit' -Name $component -Outcome  'Skipped'
+            #}
+          #}
+        #}
+        #if ($env:builder -eq "cmake")
+        #{
+          #pushd cmake-build;
+          #Write-Host -ForegroundColor Yellow $line;
+          #ctest --config RelWithDebInfo -N
+          #Write-Host -ForegroundColor Yellow $line;
 
-          Write-Host -ForegroundColor Yellow 'ctest -C Debug -VV -E SQL*'
-          ctest -C Debug -VV -E SQL*
-          popd
-        }
-        Write-Host $runs' runs, ' $fails' fails'
-        if ($fails -gt 0)
-        {
-            Write-Host 'Failed: ' $failedTests
-            $host.SetShouldExit($fails);
-        } else
-        {
-            $host.SetShouldExit(0);
-        }
-      }
+          #Write-Host -ForegroundColor Yellow 'ctest -C Debug -VV -E SQL*'
+          #ctest -C Debug -VV -E SQL*
+          #popd
+        #}
+        #Write-Host $runs' runs, ' $fails' fails'
+        #if ($fails -gt 0)
+        #{
+            #Write-Host 'Failed: ' $failedTests
+            #$host.SetShouldExit($fails);
+        #} else
+        #{
+            #$host.SetShouldExit(0);
+        #}
+      #}
 
 on_success:
   - echo success
@@ -611,13 +611,13 @@ notifications:
     on_build_failure: false
     on_build_status_changed: false
 
-  - provider: Slack
-    incoming_webhook: https://hooks.slack.com/services/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
-    auth_token:
-      secure: Xsss/K3VV9wZI9Ffwvafa67kyohNA437xJ3WA9fVI4w=
-    channel: appveyor
-    on_build_success: false
-    on_build_failure: true
-    on_build_status_changed: true
+  #- provider: Slack
+    #incoming_webhook: https://hooks.slack.com/services/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
+    #auth_token:
+      #secure: Xsss/K3VV9wZI9Ffwvafa67kyohNA437xJ3WA9fVI4w=
+    #channel: appveyor
+    #on_build_success: false
+    #on_build_failure: true
+    #on_build_status_changed: true
 
 
