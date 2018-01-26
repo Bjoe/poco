@@ -455,7 +455,7 @@ build_script:
         $defs+=" -DENABLE_SAMPLES=ON";
         $defs+=" -DENABLE_TESTS=ON";
         $defs+=" ..";
-        Write-Host -ForegroundColor Yellow cmake $defs
+        Write-Host -ForegroundColor Yellow cmake --trace-expand $defs
         $process = Start-Process -PassThru -nnw -Wait -FilePath "cmake" -RSO cout -RSE cerr -Args $defs;
         gc cout; gc cerr;
         try {
