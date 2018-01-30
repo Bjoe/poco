@@ -28,6 +28,10 @@ target_include_directories( "${LIBNAME}"
     )
 target_compile_definitions("${LIBNAME}" PUBLIC ${LIB_MODE_DEFINITIONS})
 
+if(MSVC AND NOT USING_INTERNAL_OPENSSL)
+    target_compile_definitions("${LIBNAME}" PUBLIC POCO_EXTERNAL_OPENSSL)
+endif()
+
 POCO_INSTALL("${LIBNAME}")
 POCO_GENERATE_PACKAGE("${LIBNAME}")
 
