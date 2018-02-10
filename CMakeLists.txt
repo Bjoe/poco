@@ -85,6 +85,9 @@ option(ENABLE_PDF "Enable PDF" OFF)
 option(ENABLE_UTIL "Enable Util" ON)
 option(ENABLE_NET "Enable Net" ON)
 
+option(POCO_STATIC
+  "Set to OFF|ON (default is OFF) to control build of POCO as STATIC library" OFF)
+
 # allow disabling of internally built OpenSSL# (see below for details)
 # if POCO pre-built OpenSSL directory is found, and DISABLE_INTERNAL_OPENSSL=OFF,
 # the internal OpenSSL build will be used
@@ -99,10 +102,16 @@ if(MSVC AND (EXISTS "${PROJECT_SOURCE_DIR}/openssl/build/") AND NOT DISABLE_INTE
     else()
         set(_MSVC_ARCH "32")
     endif()
-    list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/lib/debug/")
-    list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/lib/release/")
-    set(OPENSSL_MSVC_STATIC_RT TRUE)
-endif(MSVC)
+    if(POCO_STATIC)
+        set(OPENSSL_MSVC_STATIC_RT TRUE)
+        set(_LIB_DIR "lib")
+    else()
+        set(_LIB_DIR "bin")
+    endif()
+    list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/${_LIB_DIR}/debug/")
+    list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/${_LIB_DIR}/release/")
+    message(STATUS "Use internal OpenSSL: ${OPENSSL_ROOT_DIR}")
+endif(MSVC AND (EXISTS "${PROJECT_SOURCE_DIR}/openssl/build/") AND NOT DISABLE_INTERNAL_OPENSSL)
 
 if(ENABLE_NETSSL OR ENABLE_CRYPTO)
     find_package(OpenSSL REQUIRED)
@@ -111,7 +120,8 @@ else()
 endif(ENABLE_NETSSL OR ENABLE_CRYPTO)
 
 if(OPENSSL_FOUND)
-  message(STATUS "Using OpenSSL from ${OPENSSL_ROOT_DIR}")
+  message(STATUS "Found OpenSSL")
+  message(STATUS "Enable NetSSL and Crypto support")
   option(ENABLE_NETSSL "Enable NetSSL" ON)
   option(ENABLE_CRYPTO "Enable Crypto" ON)
 else()
@@ -145,9 +155,6 @@ option(ENABLE_TESTS
 
 option(ENABLE_SAMPLES
   "Set to OFF|ON (default is OFF) to control build of POCO samples" OFF)
-
-option(POCO_STATIC
-  "Set to OFF|ON (default is OFF) to control build of POCO as STATIC library" OFF)
 
 option(POCO_UNBUNDLED
   "Set to OFF|ON (default is OFF) to control linking dependencies as external" OFF)
