@@ -21,6 +21,14 @@ add_test(NAME ${LIBNAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COM
 
 target_link_libraries( ${TESTUNIT} ${CMAKE_THREAD_LIBS_INIT} PocoNetSSL PocoCrypto PocoNet PocoUtil PocoXML PocoFoundation PocoCppUnit)
 
+if(MSVC AND USING_INTERNAL_OPENSSL)
+    foreach(_OSSL_PATH ${OPENSSL_ROOT_DIR})
+        string(REPLACE "/" "\\" _OSSL_PATH ${_OSSL_PATH})
+        string(APPEND _ENV_PATH ${_OSSL_PATH} "\;")
+    endforeach()
+    set_tests_properties(${LIBNAME} PROPERTIES  ENVIRONMENT "PATH=%PATH%\;${_ENV_PATH}")
+endif(MSVC AND USING_INTERNAL_OPENSSL)
+
 # The test is run in the build directory. So the test data is copied there too
 add_custom_command(TARGET ${TESTUNIT} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/any.pem ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}

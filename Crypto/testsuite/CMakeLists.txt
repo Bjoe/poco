@@ -19,6 +19,15 @@ POCO_SOURCES_AUTO_PLAT( TEST_SRCS WINCE
 add_executable( ${TESTUNIT} ${TEST_SRCS} )
 add_test(NAME ${LIBNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${TESTUNIT} -all)
 target_link_libraries( ${TESTUNIT} PocoCrypto PocoXML PocoUtil PocoFoundation PocoCppUnit )
+
+if(MSVC AND USING_INTERNAL_OPENSSL)
+    foreach(_OSSL_PATH ${OPENSSL_ROOT_DIR})
+        string(REPLACE "/" "\\" _OSSL_PATH ${_OSSL_PATH})
+        string(APPEND _ENV_PATH ${_OSSL_PATH} "\;")
+    endforeach()
+    set_tests_properties(${LIBNAME} PROPERTIES  ENVIRONMENT "PATH=%PATH%\;${_ENV_PATH}")
+endif(MSVC AND USING_INTERNAL_OPENSSL)
+
 if(UNIX)
     target_link_libraries( ${TESTUNIT} pthread)
 endif(UNIX)

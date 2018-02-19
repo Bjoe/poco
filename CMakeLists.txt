@@ -110,7 +110,6 @@ if(MSVC AND (EXISTS "${PROJECT_SOURCE_DIR}/openssl/build/") AND NOT DISABLE_INTE
     endif()
     list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/${_LIB_DIR}/debug/")
     list(APPEND OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/openssl/build/win${_MSVC_ARCH}/${_LIB_DIR}/release/")
-    message(STATUS "Use internal OpenSSL: ${OPENSSL_ROOT_DIR}")
 endif(MSVC AND (EXISTS "${PROJECT_SOURCE_DIR}/openssl/build/") AND NOT DISABLE_INTERNAL_OPENSSL)
 
 if(ENABLE_NETSSL OR ENABLE_CRYPTO)
