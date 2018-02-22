@@ -295,7 +295,8 @@ void X509Certificate::addSubject(NID nid, const std::string& name)
 
 std::string X509Certificate::subjectName(NID nid) const
 {
-	if (X509_NAME* subj = X509_get_subject_name(_pCert))
+	X509_NAME* subj = X509_get_subject_name(_pCert);
+	if (subj)
 	{
 		char buffer[NAME_BUFFER_SIZE];
 		if (X509_NAME_get_text_by_NID(subj, nid, buffer, sizeof(buffer)) >= 0)
