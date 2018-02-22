@@ -30,6 +30,7 @@
 #include <sstream>
 #include <vector>
 
+#include <iostream> // TODO(Bjoe) Remove me
 
 using namespace Poco::Crypto;
 
@@ -501,9 +502,21 @@ std::cout << "Create X509Store ..." << std::endl;
 std::cout << "VerifyResult ..." << std::endl;
 
 	X509Store::VerifyResult result = store.verifyCertificateChain(cert);
+
+std::cout << "VerifyResult 1 ..." << std::endl;
+
 	assert (result.isOk() == true);
+
+std::cout << "VerifyResult 2 ..." << std::endl;
+
 	result = store.verifyCertificateChain(wrongCert);
+
+std::cout << "VerifyResult 3 ..." << std::endl;
+
 	assert (result.isOk() == false);
+
+std::cout << "VerifyResult 4 ..." << std::endl;
+
 	assert (wrongCert.equals(result.certificate()) == true);
 }
 
@@ -559,14 +572,28 @@ void CryptoTest::testRevokeCertificate()
 	store.addCrl(crl);
 
 
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
+
 	X509Store::VerifyResult result = store.verifyCertificateChain(cert);
+
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
+
 	assert (result.isOk() == false);
+
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
+
 	assert (result.code() == X509_V_ERR_CERT_REVOKED);
+
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
+
 	assert (result.certificate().commonName() == "Test certificate");
 
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
 
 	assert (revoked.getRevocationDate() == revokeDate);
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
 	assert (revoked.getReasonCode() == X509Revoked::KEY_COMPROMISE);
+std::cout << "VerifyResult ..." << __LINE__ << std::endl;
 }
 
 

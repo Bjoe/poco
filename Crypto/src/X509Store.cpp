@@ -22,6 +22,7 @@
 #include <openssl/pem.h>
 #include <cstring>
 
+#include <iostream> // TODO(Bjoe) Remove me
 
 namespace Poco {
 namespace Crypto {
@@ -100,30 +101,47 @@ bool X509Store::addCrl(const X509RevocationList& crl)
 X509Store::VerifyResult X509Store::verifyCertificateChain(const X509Certificate& cert)
 {
 	X509_STORE_set_flags(_pStore, 0);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	X509_STORE_CTX *csc = X509_STORE_CTX_new();
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	X509_STORE_CTX_init(csc,_pStore,const_cast<X509*>(static_cast<const X509*>(cert)),0);
 	if (_purpose)
 	{
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		X509_STORE_CTX_set_purpose(csc, _purpose);
 	}
 	VerifyResult result;
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	int rc = X509_verify_cert(csc);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	if (rc != 1)
 	{
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		int code = X509_STORE_CTX_get_error(csc);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		int depth = X509_STORE_CTX_get_error_depth(csc);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		const char* errorChar = X509_verify_cert_error_string(code);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		std::string errorString(errorChar);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		X509* x509cert = X509_STORE_CTX_get_current_cert(csc);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		x509cert = X509_dup(x509cert);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		X509Certificate certificate;
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		if(x509cert)
 		{
+std::cout << __func__ << " " << __LINE__ << std::endl;
 			certificate = X509Certificate(x509cert);
 		}
+std::cout << __func__ << " " << __LINE__ << std::endl;
 		result = VerifyResult(certificate, depth, code, errorString);
 	}
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	X509_STORE_CTX_free(csc);
+std::cout << __func__ << " " << __LINE__ << std::endl;
 	return result;
 }
 
