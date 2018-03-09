@@ -34,7 +34,3 @@ target_link_libraries( ${TESTUNIT} ${CMAKE_THREAD_LIBS_INIT} PocoNetSSL PocoCryp
 if(MSVC AND USING_INTERNAL_OPENSSL)
 	set_tests_properties(${LIBNAME} PROPERTIES  ENVIRONMENT "PATH=%PATH%\;${INTERNAL_OPENSSL_PATH}")
 endif(MSVC AND USING_INTERNAL_OPENSSL)
-
-# The test is run in the build directory. So the test data is copied there too
-add_custom_command(TARGET ${TESTUNIT} POST_BUILD
-
