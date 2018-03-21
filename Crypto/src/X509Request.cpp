@@ -322,7 +322,7 @@ bool X509Request::issuedBy(const X509Request& issuerCertificate) const
 bool X509Request::sign(const EVPPKey &pkey, const std::string& mdstr)
 {
 	const char* mdc = mdstr.c_str();
-	if(std::string("default").compare(mdstr))
+	if(std::string("default").compare(mdstr) == 0)
 	{
 		int defNid = 0;
 		EVP_PKEY_get_default_digest_nid(const_cast<EVP_PKEY*>(static_cast<const EVP_PKEY*>(pkey)), &defNid);
