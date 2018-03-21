@@ -400,8 +400,15 @@ void CryptoTest::testSignRequestCertificate()
 	certificate.addSubject(X509Request::NID_COUNTRY, "DE");
 	certificate.addSubject(X509Request::NID_ORGANIZATION_NAME, "Test organization");
 
-	certificate.addExtension(X509Extension::createWithBasicConstraints(X509Extension::CRITICAL_CA_TRUE));
+	//certificate.addExtension(X509Extension::createWithBasicConstraints(X509Extension::CRITICAL_CA_TRUE));
+	//certificate.addExtension(X509Extension::create(NID_basic_constraints, "critical,CA:FALSE"));
+	//certificate.addExtension(X509Extension::create(NID_key_usage, "critical,digitalSignature"));
 
+	X509Extension::List extList;
+	extList.push_back(X509Extension::createWithBasicConstraints(X509Extension::CRITICAL_CA_TRUE));
+	extList.push_back(X509Extension::create(NID_key_usage, "critical,digitalSignature"));
+
+	certificate.setExtensions(extList);
 
 	RSAKey key(RSAKey::KL_1024, RSAKey::EXP_SMALL);
 	EVPPKey publicKey = key.evppkey();
@@ -427,15 +434,15 @@ void CryptoTest::testSignRequestCertificate()
 
 	X509Extension::List extensions = certificate.extensions();
 
-	assert (extensions.size() == 1);
-	X509Extension extension = extensions.at(0);
+	assert (extensions.size() == 2);
+	X509Extension extension = extensions.at(1);
 
 	assert (extension.isCritical() == true);
-	assert (extension.data()[0] == 0x30);
-	assert (extension.data()[1] == 0x03);
-	assert (extension.data()[2] == 0x01);
-	assert (extension.data()[3] == 0x01);
-	assert (extension.data()[4] == 0xff);
+	assert (extension.data()[0] == 0x03);
+	assert (extension.data()[1] == 0x02);
+	assert (extension.data()[2] == 0x07);
+	assert (extension.data()[3] == 0x80);
+	//assert (extension.data()[4] == 0xff);
 
 	assert (subjectName == "/CN=Common name test/C=DE/O=Test organization");
 	assert (commonName == "Common name test");
