@@ -151,8 +151,11 @@ public:
 		/// Returns true if verification against the issuer certificate
 		/// was successfull, false otherwise.
 
-	bool sign(const EVPPKey& pkey, const std::string& mdstr = "default");
+	int sign(const EVPPKey& pkey, const std::string& mdstr = "default");
 		/// Sign the certificate
+		///
+		/// Return the size of the signature in bytes for success and
+		/// zero for failure.
 
 	void print(std::ostream& out) const;
 		/// Prints the request information to ostream.

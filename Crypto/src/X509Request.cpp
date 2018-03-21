@@ -319,7 +319,7 @@ bool X509Request::issuedBy(const X509Request& issuerCertificate) const
 }
 
 
-bool X509Request::sign(const EVPPKey &pkey, const std::string& mdstr)
+int X509Request::sign(const EVPPKey &pkey, const std::string& mdstr)
 {
 	const char* mdc = mdstr.c_str();
 	if(std::string("default").compare(mdstr) == 0)
@@ -329,8 +329,7 @@ bool X509Request::sign(const EVPPKey &pkey, const std::string& mdstr)
 		mdc = OBJ_nid2sn(defNid);
 	}
 	const EVP_MD* md = EVP_get_digestbyname(mdc);
-	X509_REQ_sign(_pRequest, const_cast<EVP_PKEY*>(static_cast<const EVP_PKEY*>(pkey)), md);
-	return true;
+	return X509_REQ_sign(_pRequest, const_cast<EVP_PKEY*>(static_cast<const EVP_PKEY*>(pkey)), md);
 }
 
 void X509Request::print(std::ostream &out) const
