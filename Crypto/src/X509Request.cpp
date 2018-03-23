@@ -280,7 +280,7 @@ void X509Request::setExtensions(const X509Extension::List &x509Extensions)
 {
 	if(x509Extensions.size() > 0)
 	{
-		STACK_OF(X509_EXTENSION)* extensions;
+		STACK_OF(X509_EXTENSION)* extensions = NULL;
 		for (int i = 0; i < x509Extensions.size(); ++i)
 		{
 			X509_EXTENSION* ext = const_cast<X509_EXTENSION*>(static_cast<const X509_EXTENSION*>(x509Extensions[i]));
@@ -299,10 +299,9 @@ X509Extension::List X509Request::extensions()
 	for (int i = 0;i < sk_X509_EXTENSION_num(exts); ++i)
 	{
 		X509_EXTENSION *ext = sk_X509_EXTENSION_value(exts, i);
-		X509_EXTENSION *newExt;
-		X509Extension::duplicate(ext, &newExt);
 		extensions.push_back(X509Extension(ext));
 	}
+	sk_X509_EXTENSION_free(exts);
 	return extensions;
 }
 
