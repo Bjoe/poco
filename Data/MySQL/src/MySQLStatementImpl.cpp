@@ -141,6 +141,15 @@ void MySQLStatementImpl::bindImpl()
 
 	_stmt.bindParams(_pBinder->getBindArray(), _pBinder->size());
 	_stmt.execute();
+
+	if (_stmt.getFieldCount() != _metadata.columnsReturned())
+	{
+		_metadata.reset();
+		_metadata.init(_stmt);
+
+		if (_metadata.columnsReturned() > 0)
+			_stmt.bindResult(_metadata.row());
+	}
 	_hasNext = NEXT_DONTKNOW;
 }
 

@@ -25,6 +25,7 @@ namespace MySQL {
 StatementExecutor::StatementExecutor(MYSQL* mysql)
 	: _pSessionHandle(mysql)
 	, _affectedRowCount(0)
+	, _fieldCount(0)
 {
 	if (!(_pHandle = mysql_stmt_init(mysql)))
 		throw StatementException("mysql_stmt_init error");
@@ -108,6 +109,8 @@ void StatementExecutor::execute()
 	my_ulonglong affectedRows = mysql_affected_rows(_pSessionHandle);
 	if (affectedRows != ((my_ulonglong) - 1))
 		_affectedRowCount = static_cast<std::size_t>(affectedRows); //Was really a DELETE, UPDATE or INSERT statement
+
+	_fieldCount = mysql_stmt_field_count(_pHandle);
 }
 
 
@@ -121,6 +124,15 @@ bool StatementExecutor::fetch()
 	// we have specified zero buffers for BLOBs, so DATA_TRUNCATED is normal in this case
 	if ((res != 0) && (res != MYSQL_NO_DATA) && (res != MYSQL_DATA_TRUNCATED)) 
 		throw StatementException("mysql_stmt_fetch error", _pHandle, _query);
+
+	// consume status result of CALL statements
+	if (res == MYSQL_NO_DATA)
+	{
+		while (mysql_stmt_next_result(_pHandle) == 0)
+		{
+			mysql_stmt_fetch(_pHandle);
+		}
+	}
 
 	return (res == 0) || (res == MYSQL_DATA_TRUNCATED);
 }
@@ -143,6 +155,12 @@ bool StatementExecutor::fetchColumn(std::size_t n, MYSQL_BIND *bind)
 int StatementExecutor::getAffectedRowCount() const
 {
 	return static_cast<int>(_affectedRowCount);
+}
+
+
+int StatementExecutor::getFieldCount() const
+{
+	return _fieldCount;
 }
 
 

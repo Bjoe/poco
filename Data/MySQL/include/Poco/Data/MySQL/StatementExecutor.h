@@ -63,6 +63,8 @@ public:
 		/// Fetches the column.
 
 	int getAffectedRowCount() const;
+
+	int getFieldCount() const;
 		
 	operator MYSQL_STMT* ();
 		/// Cast operator to native handle type.
@@ -77,6 +79,7 @@ private:
 	MYSQL_STMT* _pHandle;
 	int         _state;
 	std::size_t _affectedRowCount;
+	int         _fieldCount;
 	std::string _query;
 };
 
