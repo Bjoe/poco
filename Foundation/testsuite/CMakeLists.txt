@@ -65,3 +65,5 @@ add_library( TestLibrary SHARED src/TestLibrary.cpp src/TestPlugin.cpp src/TestP
 set_target_properties( TestLibrary PROPERTIES PREFIX "")
 set_target_properties(TestLibrary PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
 target_link_libraries(TestLibrary Poco::Foundation )
+
+add_dependencies(Foundation-testrunner TestApp TestLibrary)
