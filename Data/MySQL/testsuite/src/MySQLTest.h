@@ -96,6 +96,8 @@ public:
 	void testNullableString();
 	void testTupleWithNullable();
 
+	void testStoreProcedure();
+
 	void testSessionTransaction();
 	void testTransaction();
 

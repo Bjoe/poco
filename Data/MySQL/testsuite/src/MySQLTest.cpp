@@ -21,6 +21,8 @@
 #include "Poco/Data/MySQL/Connector.h"
 #include "Poco/Data/MySQL/Utility.h"
 #include "Poco/Data/MySQL/MySQLException.h"
+#include "Poco/Data/MySQL/SessionImpl.h"
+#include "Poco/Data/MySQL/QueryExecutor.h"
 #include "Poco/Nullable.h"
 #include "Poco/Data/DataException.h"
 #include <iostream>
@@ -688,6 +690,33 @@ void MySQLTest::testTupleWithNullable()
 }
 
 
+void MySQLTest::testStoreProcedure()
+{
+	if (!_pSession) fail ("Test not available.");
+
+	Poco::Data::MySQL::SessionImpl* mySql = static_cast<Poco::Data::MySQL::SessionImpl*>(_pSession->impl());
+	Poco::Data::MySQL::QueryExecutor mysqlQuery(mySql->handle());
+	mysqlQuery << "DROP PROCEDURE IF EXISTS p1", Poco::Data::MySQL::Keywords::queryNow;
+	mysqlQuery << "CREATE PROCEDURE p1("
+				  "  IN p_in INT, "
+				  "  OUT p_out INT, "
+				  "  INOUT p_inout INT) "
+				  "BEGIN "
+				  "  SET p_out = 200, p_inout = 300; "
+				  "  SELECT p_in, p_out, p_inout; "
+				  "END",  Poco::Data::MySQL::Keywords::queryNow;
+
+	int p_in = 10;
+	int p_out = 0;
+	int p_inout = 30;
+
+	*_pSession << "CALL p1(?,?,?)", into(p_in), into(p_out), into(p_inout), use(p_in), use(p_out), use(p_inout), now;
+	assertTrue (p_in == 10);
+	assertTrue (p_out = 200);
+	assertTrue (p_inout = 300);
+}
+
+
 void MySQLTest::dropTable(const std::string& tableName)
 {
 	try { *_pSession << format("DROP TABLE IF EXISTS %s", tableName), now; }
@@ -912,6 +941,7 @@ CppUnit::Test* MySQLTest::suite()
 	CppUnit_addTest(pSuite, MySQLTest, testSessionTransaction);
 	CppUnit_addTest(pSuite, MySQLTest, testTransaction);
 	CppUnit_addTest(pSuite, MySQLTest, testReconnect);
+	CppUnit_addTest(pSuite, MySQLTest, testStoreProcedure);
 
 	return pSuite;
 }
