@@ -21,11 +21,13 @@ execute_process(
 )
                 
 if(_RESULT)
+    execute_process(COMMAND ${ANDROID_NDK}/../platform-tools/adb shell "ls -R /data/local/tmp")
     message(FATAL_ERROR "Execution of ${UNITTEST_FILENAME} failed")
 else()
     string(REGEX MATCH "exit code ([0-9]+)" _EXIT_CODE ${_OUT})
     if(NOT "${CMAKE_MATCH_1}" EQUAL 0)
         string(REGEX REPLACE "exit code [0-9]+" "" _PRINT_OUT ${_OUT})
+        execute_process(COMMAND ${ANDROID_NDK}/../platform-tools/adb shell "ls -R /data/local/tmp")
         message(FATAL_ERROR "${UNITTEST_FILENAME} execution error: ${_PRINT_OUT} ${_ERR}")
     endif()
 endif()
