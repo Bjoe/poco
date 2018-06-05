@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.2.0)
 
+option(HUNTER_ENABLED "Enable Hunter package manager" NO)
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.20.31.tar.gz"
+    SHA1 "65c8f2292566aedb2fe10e08e09c74dda8e5d07a"
+    LOCAL
+)
+
 project(Poco)
 
 file(STRINGS "${PROJECT_SOURCE_DIR}/libversion" SHARED_LIBRARY_VERSION)
@@ -66,6 +74,7 @@ message(STATUS "Setting Poco build type - ${CMAKE_BUILD_TYPE}")
 # Include some common macros to simpilfy the Poco CMake files
 include(PocoMacros)
 
+hunter_add_package(OpenSSL)
 if(ENABLE_CRYPTO OR ENABLE_NETSSL)
 	find_package(OpenSSL REQUIRED)
 else()
@@ -80,12 +89,16 @@ else()
 	option(ENABLE_CRYPTO "Enable Crypto" OFF)
 endif()
 
-if(ENABLE_APACHECONNECTOR)
-    find_package(APR REQUIRED)
-    find_package(Apache2 REQUIRED)
+if(NOT HUNTER_ENABLED)
+    if(ENABLE_APACHECONNECTOR)
+        find_package(APR REQUIRED)
+        find_package(Apache2 REQUIRED)
+    else()
+        find_package(APR)
+        find_package(Apache2)    
+    endif()
 else()
-    find_package(APR)
-    find_package(Apache2)    
+    message(WARNING "There is no APR and Apache2 build in hunter yet. Apache-connector support is switched off.")
 endif()
 
 if(APRUTIL_FOUND AND APACHE_FOUND AND 
@@ -95,6 +108,7 @@ else()
     option(ENABLE_APACHECONNECTOR "Enable ApacheConnector" OFF)
 endif()
 
+hunter_add_package(MySQL-client)
 if(ENABLE_DATA_MYSQL)
   find_package(MySQL REQUIRED)
 else()
@@ -109,6 +123,7 @@ else()
   option(ENABLE_DATA_MYSQL "Enable Data MySQL" OFF)
 endif()
 
+hunter_add_package(PostgreSQL)
 if(ENABLE_DATA_POSTGRESQL)
     find_package(PostgreSQL REQUIRED)
 else()
@@ -123,10 +138,14 @@ else()
     option(ENABLE_DATA_POSTGRESQL "Enable SQL PosgreSQL" OFF)
 endif()
 
-if(ENABLE_DATA_ODBC)
-  find_package(ODBC REQUIRED)
+if(NOT HUNTER_ENABLED)
+  if(ENABLE_DATA_ODBC)
+    find_package(ODBC REQUIRED)
+  else()
+    find_package(ODBC)
+  endif()
 else()
-  find_package(ODBC)
+ message(WARNING "There is no ODBC build in hunter yet. ODBC-data support is switched off.")
 endif()
 
 if(ODBC_FOUND)

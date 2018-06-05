@@ -45,7 +45,7 @@ if(MYSQL_FOUND AND ENABLE_DATA_MYSQL)
     message(STATUS "MySQL Support Enabled")
     add_subdirectory( MySQL )
 else()
-    message(STATUS "MySQL Support Disabled - no MySQL library")
+        message(STATUS "MySQL Support Disabled - no MySQL library found")
 endif()
 
 if(POSTGRESQL_FOUND AND ENABLE_DATA_POSTGRESQL)
